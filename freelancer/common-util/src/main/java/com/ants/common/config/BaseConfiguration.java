@@ -14,7 +14,7 @@ public class BaseConfiguration {
     private static String SNAPPYDATA_CONFIG_FILE = "snappy-data-uri-configs.properties";
     private static String ELASTICSEARCH_CONFIG_FILE = "elasticsearch-configs.properties";
     private static String KAFKA_PRODUCERS_CONFIGS_FILE = "kafka-producers-configs.properties";
-    private static String baseConfig = "./config/";
+    private static String baseConfig = "config/";
 
     public static void setBaseConfig(String targetConfDir) throws IllegalArgumentException {
         if (StringUtil.isNullOrEmpty(targetConfDir)) {

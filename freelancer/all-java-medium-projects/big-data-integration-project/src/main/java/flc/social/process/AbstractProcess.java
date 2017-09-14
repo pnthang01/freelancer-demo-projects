@@ -3,8 +3,13 @@ package flc.social.process;
 import com.ants.common.config.KafkaProducerConfiguration;
 import com.ants.common.model.KafkaRecord;
 import com.ants.common.processor.KafkaLogHandler;
+import com.ants.druid.util.MethodUtil;
+import flc.social.model.CommentData;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,24 +17,41 @@ import java.util.List;
  */
 public abstract class AbstractProcess implements Runnable {
 
+    static final Logger LOGGER = LogManager.getLogger(AbstractProcess.class);
     private KafkaProducerConfiguration kafkaLoader;
+    List<CommentData> commentDataList;
     private String kafkaTopic;
 
     public AbstractProcess() throws ConfigurationException {
-        this.kafkaLoader = KafkaProducerConfiguration.load();
+//        this.kafkaLoader = KafkaProducerConfiguration.load();
+        commentDataList = new ArrayList<CommentData>();
     }
 
-    public abstract List<String> readDataSource();
+    public abstract List<CommentData> readAndCleanDataSource() throws Exception;
 
-    public void run(){
-
+    public void run() {
+        try {
+            List<CommentData> cleanedData = readAndCleanDataSource();
+            sendKafka(cleanedData);
+        } catch (Exception ex) {
+            LOGGER.error("Error when retrieving and cleaning social data.");
+        }
     }
 
-    public void sendKafka(List<String> dataList) throws Exception {
+    public void addComment(CommentData commentData) throws Exception {
+        commentDataList.add(commentData);
+        if(commentDataList.size() >= 50) {
+            sendKafka(commentDataList);
+            commentDataList.clear();
+        }
+    }
+
+    public void sendKafka(List<CommentData> dataList) throws Exception {
         int partition = kafkaLoader.getPartition(kafkaTopic);
-        KafkaLogHandler handler = null;
-
-        handler = kafkaLoader.getKafkaHandler(kafkaTopic);
-//        handler.addLog(new KafkaRecord(dataPartition, null, MethodUtil.toJson(obj)));
+        KafkaLogHandler handler = kafkaLoader.getKafkaHandler(kafkaTopic);
+        for (CommentData data : dataList) {
+            int dataPartition = (int) data.getPublishedTime() % partition;
+            handler.addLog(new KafkaRecord(dataPartition, null, MethodUtil.toJson(data)));
+        }
     }
 }
