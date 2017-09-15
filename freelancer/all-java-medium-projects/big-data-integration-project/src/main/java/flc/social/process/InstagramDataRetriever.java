@@ -7,8 +7,6 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
-
 /**
  * Created by thangpham on 12/09/2017.
  */
@@ -18,9 +16,9 @@ public class InstagramDataRetriever extends AbstractProcess {
 
     private static final String ACCESS_TOKEN = "6025652265.5e3f695.b09897a2e7264f4d986545a50bf8b101";
 
-    private static final String MEDIA_SEARCH = "https://api.instagram.com/v1/media/search?lat=51.505244&lng=-0.018848&scope=public_content&distance=100000&access_token=";
-//    private static final String TEST_MEDIA = "https://api.instagram.com/v1/tags/nofilter/media/recent?access_token=";
-    private static final String TEST_MEDIA = "https://api.instagram.com/v1/users/self/?access_token=";
+    private static final String MEDIA_SEARCH = "https://api.instagram.com/v1/media/search?lat=48.858844&lng=2.294351&access_token=";
+    //    private static final String TEST_MEDIA = "https://api.instagram.com/v1/tags/nofilter/media/recent?access_token=";
+    private static final String TEST_MEDIA = "https://api.instagram.com/v1/tags/love/media/recent?access_token=";
 
     public static void main(String[] args) throws Exception {
         new InstagramDataRetriever().readAndCleanDataSource();
@@ -29,13 +27,14 @@ public class InstagramDataRetriever extends AbstractProcess {
     public InstagramDataRetriever() throws ConfigurationException {
     }
 
-
     @Override
-    public List<CommentData> readAndCleanDataSource() throws Exception {
+    public void readAndCleanDataSource() throws Exception {
         LOGGER.info("Start to read data from Instagram");
-        System.out.println(HttpRequestClientUtil.load().executeGet(MEDIA_SEARCH + ACCESS_TOKEN));
-        return null;
+        System.out.println(HttpRequestClientUtil.load().executeGet(
+                "https://api.instagram.com/v1/users/thien.leee/media/recent/?access_token=" + ACCESS_TOKEN));
+        System.out.println(HttpRequestClientUtil.load().executeGet(TEST_MEDIA + ACCESS_TOKEN));
     }
+
     private CommentData buildCommentData(CommentSnippet snippet, String parentId, String cmtId, String type) {
         return new CommentData()
                 .setCommentId(cmtId)

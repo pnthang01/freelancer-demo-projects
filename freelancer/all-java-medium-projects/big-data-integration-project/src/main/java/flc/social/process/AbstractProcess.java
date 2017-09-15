@@ -20,19 +20,18 @@ public abstract class AbstractProcess implements Runnable {
     static final Logger LOGGER = LogManager.getLogger(AbstractProcess.class);
     private KafkaProducerConfiguration kafkaLoader;
     List<CommentData> commentDataList;
-    private String kafkaTopic;
+    private String kafkaTopic = "social_retrieved";
 
     public AbstractProcess() throws ConfigurationException {
-//        this.kafkaLoader = KafkaProducerConfiguration.load();
+        this.kafkaLoader = KafkaProducerConfiguration.load();
         commentDataList = new ArrayList<CommentData>();
     }
 
-    public abstract List<CommentData> readAndCleanDataSource() throws Exception;
+    public abstract void readAndCleanDataSource() throws Exception;
 
     public void run() {
         try {
-            List<CommentData> cleanedData = readAndCleanDataSource();
-            sendKafka(cleanedData);
+            readAndCleanDataSource();
         } catch (Exception ex) {
             LOGGER.error("Error when retrieving and cleaning social data.");
         }
@@ -41,6 +40,7 @@ public abstract class AbstractProcess implements Runnable {
     public void addComment(CommentData commentData) throws Exception {
         commentDataList.add(commentData);
         if(commentDataList.size() >= 50) {
+            LOGGER.info("Just receive 50 messages, start to send to Kafka");
             sendKafka(commentDataList);
             commentDataList.clear();
         }

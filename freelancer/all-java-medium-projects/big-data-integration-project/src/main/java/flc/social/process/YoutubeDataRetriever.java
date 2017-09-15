@@ -28,9 +28,9 @@ public class YoutubeDataRetriever extends AbstractProcess {
         new YoutubeDataRetriever().readAndCleanDataSource();
     }
 
-    public List<CommentData> readAndCleanDataSource() throws Exception {
+    public void readAndCleanDataSource() throws Exception {
         YouTube youtube = YoutubeDataService.getYouTubeService();
-        List<CommentData> commentData = new ArrayList<CommentData>();
+//        List<CommentData> commentData = new ArrayList<CommentData>();
         String regionCode = "GB";
         String nextPageToken = MetadataRedisDao.load().getPopularToken("GB");
         LOGGER.info("Start to retrieve youtube data at region: " + regionCode + " pagetoken = " + nextPageToken);
@@ -53,11 +53,11 @@ public class YoutubeDataRetriever extends AbstractProcess {
                         .setMaxResults(10l).execute();
                 for (CommentThread cmt : cmtThreadRS.getItems()) {
                     Comment mainCmt = cmt.getSnippet().getTopLevelComment();
-                    commentData.add(buildCommentData(mainCmt.getSnippet(), video.getId(), mainCmt.getId(), "main"));
+                    addComment(buildCommentData(mainCmt.getSnippet(), video.getId(), mainCmt.getId(), "main"));
                     if(null != cmt.getReplies())
                     for (Comment comment : cmt.getReplies().getComments()) {
                         CommentSnippet snippet = comment.getSnippet();
-                        commentData.add(buildCommentData(snippet, video.getId(), comment.getId(), "reply"));
+                        addComment(buildCommentData(snippet, video.getId(), comment.getId(), "reply"));
                     }
                 }
                 cmtThreadToken = cmtThreadRS.getNextPageToken();
@@ -65,7 +65,6 @@ public class YoutubeDataRetriever extends AbstractProcess {
         }
         nextPageToken = mostPopularResponse.getNextPageToken();
         MetadataRedisDao.load().setPopularToken(regionCode, nextPageToken);
-        return commentData;
     }
 
     private CommentData buildCommentData(CommentSnippet snippet, String parentId, String cmtId, String type) {

@@ -53,6 +53,7 @@ public class KafkaProducerConfiguration {
         config = builder.getConfiguration();
         logHandlers = new ConcurrentHashMap();
         topicPartition = new HashMap();
+        requestCount = new AtomicInteger();
         executor = Executors.newScheduledThreadPool(10);
         shutdownHook = ShutdownHookCleanUp.load();
         shutdownHook.addExecutor(new ShutdownHookCleanUp.ExecutorCleanUpUnit(KafkaLogHandler.class.getName(), executor));

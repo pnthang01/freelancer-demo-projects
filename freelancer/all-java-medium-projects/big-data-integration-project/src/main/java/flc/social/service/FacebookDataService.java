@@ -8,7 +8,7 @@ import com.restfb.types.Post;
  */
 public class FacebookDataService {
 
-    private static final String MY_ACCESS_TOKEN = "EAACEdEose0cBAE1Tkphqi5VK7Hl4zkhvoG2ATNyyK3KisEOZAd9xTUPQwHZCDfZAu3RTDJTaotLXQHKEx1PjGH66CEN90ZC1s8QaCzuzQeleQFMUK7rNf0E1HM95LeZBrZBmCMlpqb2t8H3VyQM71OHTsm0PakHKIpupNMwNvtzrAVXL85eJOafZC98xtW8hX91QZBhLt15R3gZDZD";
+    private static final String MY_ACCESS_TOKEN = "EAACEdEose0cBAJktliBNB2GJhlawZAcHPcyMuO2ILGFBLuMcpw5ZCMISrqaMsLT0jAmJq15QJZA7F8lZCVrZAJU0iemRmTBxizmsNxyhdgWi2KFwk1e2ZCbh00U7HvZBrY05vMlGssXSgjXYcc4MTROVARxn9LL33ZApCPrIjiJ67YVPIQ8IliApcFtpL2MonW02SwveZCMjAawZDZD";
 
     public static FacebookClient getFacebookClient() {
         return new DefaultFacebookClient(MY_ACCESS_TOKEN, Version.LATEST);
