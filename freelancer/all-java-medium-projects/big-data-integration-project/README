@@ -1,0 +1,8 @@
+1. build by mvn clean package
+2. copy file ./target/big-data-integration-1.0.jar to deploy folder
+3. copy lib  ./target/lib to deploy folder
+5. init redis instance
+6. init kafka instance
+7. init elasticsearch/kibana instance
+8. edit config in config folder
+9. run .sh files
