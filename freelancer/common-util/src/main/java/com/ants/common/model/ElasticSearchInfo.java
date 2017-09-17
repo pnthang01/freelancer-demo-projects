@@ -7,13 +7,22 @@ import java.util.List;
  * Created by thangpham on 29/06/2017.
  */
 public class ElasticSearchInfo {
-
+    private String nodeName;
     private String clusterName;
     private List<HostPort> nodeList;
 
-    public ElasticSearchInfo(String clusterName, List<HostPort> nodeList) {
+    public ElasticSearchInfo(String nodeName, String clusterName, List<HostPort> nodeList) {
         this.clusterName = clusterName;
         this.nodeList = nodeList;
+        this.nodeName = nodeName;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
     }
 
     public String getClusterName() {
