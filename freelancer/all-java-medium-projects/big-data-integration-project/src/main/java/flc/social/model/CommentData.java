@@ -78,4 +78,16 @@ public class CommentData implements Serializable {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "CommentData{" +
+                "commentId='" + commentId + '\'' +
+                ", channel='" + channel + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", content='" + content + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", type='" + type + '\'' +
+                ", publishedTime=" + publishedTime +
+                '}';
+    }
 }
