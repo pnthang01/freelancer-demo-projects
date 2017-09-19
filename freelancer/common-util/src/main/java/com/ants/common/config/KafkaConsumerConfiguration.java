@@ -1,6 +1,5 @@
 package com.ants.common.config;
 
-import com.ants.common.processor.KafkaLogHandler;
 import com.ants.common.processor.KafkaLogReceiver;
 import com.ants.common.util.MethodUtil;
 import com.ants.common.util.ShutdownHookCleanUp;
@@ -11,8 +10,6 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,14 +89,14 @@ public class KafkaConsumerConfiguration {
                         return null;
                     }
                     LOGGER.info("############ 9");
-                    int producerSize = config.getInt("data.kafka.consumer." + topicNaming + ".consumer.size", 5);
-                    LOGGER.info("############ 10: "+producerSize);
+                    int consumerSize = config.getInt("data.kafka.consumer." + topicNaming + ".size", 5);
+                    LOGGER.info("############ 10: "+consumerSize);
                     int delta = 400;
-                    int handlerSize = (int) Math.ceil((double) producerSize / (double) 5);
+                    int handlerSize = (int) Math.ceil((double) consumerSize / (double) 5);
                     LOGGER.info("############ 11: "+handlerSize);
                     for (int i = 0; i < handlerSize; ++i) {
                         LOGGER.info("############ 12: "+i);
-                        KafkaLogReceiver handler = new KafkaLogReceiver(producerSize, topic, topicNaming);
+                        KafkaLogReceiver handler = new KafkaLogReceiver(consumerSize, topic, topicNaming);
                         LOGGER.info("############ 13: "+i);
                         handlerList.add(handler);
                         LOGGER.info("############ 14: "+i);
@@ -121,7 +118,6 @@ public class KafkaConsumerConfiguration {
     }
 
     public KafkaConsumer<String, String> initNewConsumer(String topicNaming) {
-        topicNaming = "social_retrieved";
         LOGGER.info("############ 01: "+topicNaming);
         String brokers = config.getString("data.kafka.consumer." + topicNaming + ".brokers");
         LOGGER.info("############ 02xxxx: bootstrap.servers: "+brokers);
@@ -132,53 +128,20 @@ public class KafkaConsumerConfiguration {
         LOGGER.info("############ 06: key.deserializer: "+config.getString("data.kafka.key.deserializer"));
         LOGGER.info("############ 07: value.deserializer: "+config.getString("data.kafka.value.deserializer"));
         Properties props = new Properties();
-//        props.put("bootstrap.servers", brokers);
-//        props.put("group.id", config.getString("data.kafka.group.id"));
-//        props.put("enable.auto.commit", config.getString("data.kafka.enable.auto.commit"));
-//        props.put("auto.commit.interval.ms", config.getString("data.kafka.auto.commit.interval.ms"));
-//        props.put("session.timeout.ms", config.getString("data.kafka.session.timeout.ms"));
-//        props.put("key.deserializer", config.getString("data.kafka.key.deserializer"));
-//        props.put("value.deserializer", config.getString("data.kafka.value.deserializer"));
+        props.put("bootstrap.servers", brokers);
+        props.put("group.id", config.getString("data.kafka.group.id"));
+        props.put("enable.auto.commit", config.getString("data.kafka.enable.auto.commit"));
+        props.put("auto.commit.interval.ms", config.getString("data.kafka.auto.commit.interval.ms"));
+        props.put("session.timeout.ms", config.getString("data.kafka.session.timeout.ms"));
+        props.put("key.deserializer", config.getString("data.kafka.key.deserializer"));
+        props.put("value.deserializer", config.getString("data.kafka.value.deserializer"));
 
-//        props.put("bootstrap.servers", "127.0.0.1:9092");
-//        props.put("group.id", "social");
-//        props.put("enable.auto.commit", "true");
-//        props.put("auto.commit.interval.ms", "1000");
-//        props.put("session.timeout.ms", "30000");
-//        props.put("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
-//        props.put("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
-//
-//        LOGGER.info("############ 08: ");
-//        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(props);
-//        LOGGER.info("############ 09: ");
-//        consumer.subscribe(Arrays.asList(topicNaming));
-//        LOGGER.info("Subscribed to topic " + topicNaming);
+        LOGGER.info("############ 08: ");
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(props);
+        LOGGER.info("############ 09: ");
+        consumer.subscribe(Arrays.asList(topicNaming));
+        LOGGER.info("############ 10:Subscribed to topic " + topicNaming);
 
-        String topicName = "social_retrieved";
-        props.put("bootstrap.servers", "127.0.0.1:9092");
-        props.put("group.id", "social");
-        props.put("enable.auto.commit", "true");
-        props.put("auto.commit.interval.ms", "1000");
-        props.put("session.timeout.ms", "30000");
-        props.put("key.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer","org.apache.kafka.common.serialization.StringDeserializer");
-
-        KafkaConsumer<String, String> consumer = new KafkaConsumer
-                <String, String>(props);
-
-        //Kafka Consumer subscribes list of topics here.
-        consumer.subscribe(Arrays.asList(topicName));
-
-        //print the topic name
-        System.out.println("Subscribed to topic " + topicName);
-        int i = 0;
-
-        while (true) {
-            if(++i==1000) break;
-            ConsumerRecords<String, String> records = consumer.poll(100);
-            for (ConsumerRecord<String, String> record : records)
-                LOGGER.info("offset = %d, key = %s, value = %s\n", record.offset(), record.key(), record.value());
-        }
-        return null;
+        return consumer;
     }
 }
