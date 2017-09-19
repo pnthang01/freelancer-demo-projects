@@ -27,23 +27,17 @@ public class KafkaLogReceiver implements Runnable {
     private final String topicNaming;
     private final String topic;
     private long count = 0;
-    private int timeout = 1000;
-    private Gson gson;
+    private int timeout = 100;
 
     public KafkaLogReceiver(int consumerSize, String topicNaming, String topic) throws ConfigurationException {
         kafkaConsumers = new ArrayList<>();
-        gson = new Gson();
         this.logsQueue = new ConcurrentLinkedQueue<>();
         this.topicNaming = topicNaming;
         this.topic = topic;
-        LOGGER.info(" ############################### KafkaLogReceiver 1: "+consumerSize+", "+topicNaming+", "+topic);
         for (int i = 0; i < consumerSize; i++) {
-            LOGGER.info(" ############################### KafkaLogReceiver 2: "+i);
             KafkaConsumer<String, String> consumer = KafkaConsumerConfiguration.load().initNewConsumer(topicNaming);
-            LOGGER.info(" ############################### KafkaLogReceiver 3: "+i);
             kafkaConsumers.add(consumer);
         }
-        LOGGER.info(" ############################### KafkaLogReceiver 4: "+ MethodUtil.toJson(kafkaConsumers));
     }
 
     public Queue<KafkaRecord> getLog() {
