@@ -19,6 +19,9 @@ import java.util.List;
  */
 public class ElasticSearchAction extends AbstractProcess {
 
+    // input: cluster_name
+    // result: insert data to elasticsearch
+
     private static final String CLUSTER_NAME = "social-app";
 
     private String index;
@@ -38,9 +41,9 @@ public class ElasticSearchAction extends AbstractProcess {
 
     @Override
     public void readAndCleanDataSource() throws Exception {
-        List<KafkaRecord> kafkaRecordList = getDataFromKafka();
+        List<KafkaRecord> kafkaRecordList = getDataFromKafka(); // consumer data from kafka
         List<CommentData> commentDataList = new ArrayList<>();
-        try(TransportClient client = ElasticSearchConfiguration.load().getClient(CLUSTER_NAME)) {
+        try(TransportClient client = ElasticSearchConfiguration.load().getClient(CLUSTER_NAME)) { // get TransportClient
             for (KafkaRecord kafkaRecord : kafkaRecordList) {
                 LOGGER.info("Data receive: " + kafkaRecord.getValue());
                 CommentData commentData = gson.fromJson(kafkaRecord.getValue(), CommentData.class);
@@ -56,7 +59,7 @@ public class ElasticSearchAction extends AbstractProcess {
             for (CommentData model : models) {
                 IndexRequest indexRequest = new IndexRequest(index, type, model.getCommentId());
                 indexRequest.source(gson.toJson(model));
-                IndexResponse response = client.index(indexRequest).actionGet();
+                IndexResponse response = client.index(indexRequest).actionGet(); // insert to elasticsearch
                 LOGGER.info("Add success, see: "+response.toString());
             }
             LOGGER.info("Insert data to elasticsearch success, total "+models.size()+" records.");

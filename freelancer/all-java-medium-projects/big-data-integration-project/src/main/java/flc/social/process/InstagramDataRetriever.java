@@ -12,6 +12,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class InstagramDataRetriever extends AbstractProcess {
 
+    // input: access_token, location, media
+    // output: CommentData data Object
+
     static final Logger LOGGER = LogManager.getLogger(InstagramDataRetriever.class);
 
     private static final String ACCESS_TOKEN = "6025652265.5e3f695.b09897a2e7264f4d986545a50bf8b101";
@@ -27,6 +30,7 @@ public class InstagramDataRetriever extends AbstractProcess {
     public InstagramDataRetriever() throws ConfigurationException {
     }
 
+    // create a CommentData object with input params
     @Override
     public void readAndCleanDataSource() throws Exception {
         LOGGER.info("Start to read data from Instagram");
@@ -35,6 +39,7 @@ public class InstagramDataRetriever extends AbstractProcess {
         System.out.println(HttpRequestClientUtil.load().executeGet(TEST_MEDIA + ACCESS_TOKEN));
     }
 
+    // create a CommentData object with input params
     private CommentData buildCommentData(CommentSnippet snippet, String parentId, String cmtId, String type) {
         return new CommentData()
                 .setCommentId(cmtId)

@@ -18,6 +18,9 @@ import java.util.List;
  */
 public class YoutubeDataRetriever extends AbstractProcess {
 
+    // input: access_token, app_name
+    // output: CommentData data Object
+
     static final Logger LOGGER = LogManager.getLogger(YoutubeDataRetriever.class);
 
     public YoutubeDataRetriever() throws ConfigurationException {
@@ -28,9 +31,9 @@ public class YoutubeDataRetriever extends AbstractProcess {
         new YoutubeDataRetriever().readAndCleanDataSource();
     }
 
+    // Read and transfrom clean data
     public void readAndCleanDataSource() throws Exception {
         YouTube youtube = YoutubeDataService.getYouTubeService();
-//        List<CommentData> commentData = new ArrayList<CommentData>();
         String regionCode = "GB";
         String nextPageToken = MetadataRedisDao.load().getPopularToken("GB");
         LOGGER.info("Start to retrieve youtube data at region: " + regionCode + " pagetoken = " + nextPageToken);
@@ -53,11 +56,11 @@ public class YoutubeDataRetriever extends AbstractProcess {
                         .setMaxResults(10l).execute();
                 for (CommentThread cmt : cmtThreadRS.getItems()) {
                     Comment mainCmt = cmt.getSnippet().getTopLevelComment();
-                    addComment(buildCommentData(mainCmt.getSnippet(), video.getId(), mainCmt.getId(), "main"));
+                    addComment(buildCommentData(mainCmt.getSnippet(), video.getId(), mainCmt.getId(), "main")); // producer to kafka
                     if(null != cmt.getReplies())
                     for (Comment comment : cmt.getReplies().getComments()) {
                         CommentSnippet snippet = comment.getSnippet();
-                        addComment(buildCommentData(snippet, video.getId(), comment.getId(), "reply"));
+                        addComment(buildCommentData(snippet, video.getId(), comment.getId(), "reply")); // producer to kafka
                     }
                 }
                 cmtThreadToken = cmtThreadRS.getNextPageToken();
@@ -67,6 +70,7 @@ public class YoutubeDataRetriever extends AbstractProcess {
         MetadataRedisDao.load().setPopularToken(regionCode, nextPageToken);
     }
 
+    // create a CommentData object with input params
     private CommentData buildCommentData(CommentSnippet snippet, String parentId, String cmtId, String type) {
         return new CommentData()
                 .setCommentId(cmtId)

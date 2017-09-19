@@ -20,6 +20,9 @@ import java.util.List;
  */
 public class FacebookDataRetriever extends AbstractProcess {
 
+    // input: access_token, version
+    // output: CommentData data Object
+
     static final Logger LOGGER = LogManager.getLogger(FacebookDataRetriever.class);
 
     public FacebookDataRetriever() throws ConfigurationException {
@@ -29,6 +32,7 @@ public class FacebookDataRetriever extends AbstractProcess {
         new FacebookDataRetriever().readAndCleanDataSource();
     }
 
+    // create a CommentData object with input params
     public void readAndCleanDataSource() throws Exception {
         String pageId = "bbcnews";
         FacebookClient facebookClient = FacebookDataService.getFacebookClient();
@@ -49,7 +53,7 @@ public class FacebookDataRetriever extends AbstractProcess {
                         .setParentId(postId)
                         .setPublishedTime(comment.getCreatedTime().getTime())
                         .setType("main");
-                addComment(cmtData);
+                addComment(cmtData); // producer to kafka
                 Connection<Comment> replies = facebookClient.fetchConnection(comment.getId() + "/comments", Comment.class, limit);
                 for (Comment reply : replies.getData()) {
                     CommentData replyData = new CommentData()
@@ -60,7 +64,7 @@ public class FacebookDataRetriever extends AbstractProcess {
                             .setParentId(comment.getId())
                             .setPublishedTime(comment.getCreatedTime().getTime())
                             .setType("reply");
-                    addComment(replyData);
+                    addComment(replyData); // producer to kafka
                 }
             }
         }

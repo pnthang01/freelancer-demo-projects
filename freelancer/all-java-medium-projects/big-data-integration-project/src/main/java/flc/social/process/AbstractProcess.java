@@ -5,7 +5,7 @@ import com.ants.common.config.KafkaProducerConfiguration;
 import com.ants.common.model.KafkaRecord;
 import com.ants.common.processor.KafkaLogHandler;
 import com.ants.common.processor.KafkaLogReceiver;
-import com.ants.druid.util.MethodUtil;
+import com.ants.common.util.MethodUtil;
 import com.google.gson.Gson;
 import flc.social.model.CommentData;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -40,10 +40,11 @@ public abstract class AbstractProcess implements Runnable {
         try {
             readAndCleanDataSource();
         } catch (Exception ex) {
-            LOGGER.error("Error when retrieving and cleaning social data.", ex);
+            LOGGER.error("Error when retrieving and cleaning social data. "+ex.getMessage(), ex);
         }
     }
 
+    // producer to kafka
     public void addComment(CommentData commentData) throws Exception {
         commentDataList.add(commentData);
         if(commentDataList.size() >= 50) {
@@ -62,15 +63,21 @@ public abstract class AbstractProcess implements Runnable {
         }
     }
 
+    // consumer from kafka
     public List<KafkaRecord> getDataFromKafka() throws Exception {
         List<KafkaRecord> kafkaRecordList = new ArrayList<>();
         LOGGER.info("Access to Kafka with topic: "+kafkaTopic);
+        LOGGER.info(">>>>>>>>> 1 "+kafkaTopic);
         KafkaLogReceiver kafkaLogReceiver = kafkaConsumerLoader.getKafkaReceiver(kafkaTopic);
+        LOGGER.info(">>>>>>>>> 2 "+kafkaTopic);
         Queue<KafkaRecord> recordQueue = kafkaLogReceiver.getLog();
+        LOGGER.info(">>>>>>>>> 3 "+kafkaTopic);
         KafkaRecord kafkaRecord = null;
         while((kafkaRecord = recordQueue.poll()) != null) {
             kafkaRecordList.add(kafkaRecord);
         }
+        LOGGER.info("recordQueue >>>>>> : "+recordQueue.size());
+        LOGGER.info("kafkaRecordList >>>>>> : "+kafkaRecordList.size());
         return  kafkaRecordList;
     }
 }
