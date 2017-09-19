@@ -2,6 +2,7 @@ package com.ants.common.processor;
 
 import com.ants.common.config.KafkaConsumerConfiguration;
 import com.ants.common.model.KafkaRecord;
+import com.ants.common.util.MethodUtil;
 import com.google.gson.Gson;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -35,10 +36,14 @@ public class KafkaLogReceiver implements Runnable {
         this.logsQueue = new ConcurrentLinkedQueue<>();
         this.topicNaming = topicNaming;
         this.topic = topic;
+        LOGGER.info(" ############################### KafkaLogReceiver 1: "+consumerSize+", "+topicNaming+", "+topic);
         for (int i = 0; i < consumerSize; i++) {
+            LOGGER.info(" ############################### KafkaLogReceiver 2: "+i);
             KafkaConsumer<String, String> consumer = KafkaConsumerConfiguration.load().initNewConsumer(topicNaming);
+            LOGGER.info(" ############################### KafkaLogReceiver 3: "+i);
             kafkaConsumers.add(consumer);
         }
+        LOGGER.info(" ############################### KafkaLogReceiver 4: "+ MethodUtil.toJson(kafkaConsumers));
     }
 
     public Queue<KafkaRecord> getLog() {

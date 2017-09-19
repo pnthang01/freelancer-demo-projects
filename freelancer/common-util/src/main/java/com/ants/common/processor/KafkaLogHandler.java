@@ -63,7 +63,7 @@ public class KafkaLogHandler implements Runnable {
                                         public void onCompletion(KafkaRecord log, RecordMetadata metadata, Exception exception) {
                                             try {
                                                 if (exception != null) {
-                                                    LOGGER.error("Error ocurred when send log to kafka, message: %s", exception);
+                                                    LOGGER.error("Error ocurred when send log to kafka, message: %s"+ exception.getMessage(), exception);
 //                                                    long firstFailed = log.getFirstFailed() == 0 ? System.currentTimeMillis() : log.getFirstFailed();
 //                                                    if (System.currentTimeMillis() - firstFailed < 18000000) {
 //                                                        String dateHour = DateTimeUtil.formatYYYYMMDDHH(System.currentTimeMillis(), DateTimeUtil.DASH);
