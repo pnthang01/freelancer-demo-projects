@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # where supervisor's jar to use (absolute path)
-JOB_JAR="./big-data-integration-1.0.jar Class flc.social.process.FacebookDataRetriever-flc.social.process.YoutubeDataRetriever-flc.social.process.InstagramDataRetriever Name job-processing-cleaning-data Param {}"
+JOB_JAR="./big-data-integration-1.0.jar Class flc.social.process.FacebookDataRetriever-flc.social.process.YoutubeDataRetriever-flc.social.process.TwitterDataRetriever Name job-processing-cleaning-data Param {}"
 echo "jar path=$JOB_JAR"
 
 # where java to run

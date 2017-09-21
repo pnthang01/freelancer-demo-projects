@@ -68,6 +68,8 @@ public class FacebookDataRetriever extends AbstractProcess {
                 }
             }
         }
+        nextPageUrl = bbcnewsPost.getNextPageUrl();
+        MetadataRedisDao.load().setNextPageUrl(pageId, nextPageUrl);
 
     }
 

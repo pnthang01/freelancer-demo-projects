@@ -102,5 +102,27 @@ public class MetadataRedisDao {
         }).execute();
     }
 
+    public String getMaxId(final long pageId) {
+        return (new RedisCommand<String>(metadataRedis.getShardedJedisPool()) {
+            @Override
+            public String build() throws JedisException {
+                String key = "twitter:" + pageId;
+                return jedis.get(key);
+            }
+        }).execute();
+    }
+
+
+    public void setMaxId(final String pageId, final String maxId) {
+        (new RedisCommand<Integer>(metadataRedis.getShardedJedisPool()) {
+            @Override
+            public Integer build() throws JedisException {
+                String key = "twitter:" + pageId;
+                jedis.set(key, maxId);
+                return 1;
+            }
+        }).execute();
+    }
+
 
 }
