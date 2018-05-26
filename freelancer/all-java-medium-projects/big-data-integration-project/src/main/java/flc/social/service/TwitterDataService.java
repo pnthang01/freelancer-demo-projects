@@ -4,7 +4,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 /**
- * Created by dientt on 9/21/17.
+ * Created by Segnal on 9/21/17.
  */
 public class TwitterDataService {
     private static final String CONSUMER_KEY = "RUp3bfE0SRBNG4suYEogyfZ3S";

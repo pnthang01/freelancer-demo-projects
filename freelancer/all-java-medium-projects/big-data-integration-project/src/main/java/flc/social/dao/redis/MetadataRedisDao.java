@@ -14,7 +14,7 @@ import redis.clients.jedis.exceptions.JedisException;
 import java.io.IOException;
 
 /**
- * Created by thangpham on 12/09/2017.
+ * Created by Segnal on 12/09/2017.
  */
 public class MetadataRedisDao {
 
@@ -27,15 +27,22 @@ public class MetadataRedisDao {
         metadataRedis = RedisInfoConfiguration.load().getSingleRedisInfo(ConfigurationUtil.RedisInfo.METADATA_INFO_REDIS);
     }
 
-    public static MetadataRedisDao load() throws ConfigurationException, IOException {
-        if (null == _instance) {
-            synchronized (MetadataRedisDao.class) {
-                _instance = new MetadataRedisDao();
-            }
-        }
+    /**
+     * Load this Redis data access class. If null, initialize new one
+     * @return
+     * @throws ConfigurationException
+     * @throws IOException
+     */
+    public synchronized static MetadataRedisDao load() throws ConfigurationException, IOException {
+        if (null == _instance) _instance = new MetadataRedisDao();
         return _instance;
     }
 
+    /**
+     * Get the jobName whether is stopped
+     * @param jobName
+     * @return
+     */
     public boolean checkStopJob(final String jobName) {
         return (new RedisCommand<Boolean>(metadataRedis.getShardedJedisPool()) {
             @Override
@@ -45,6 +52,10 @@ public class MetadataRedisDao {
         }).execute();
     }
 
+    /**
+     * Set jobName to false, used for starting process
+     * @param jobName
+     */
     public void setStopJobToFalse(final String jobName) {
         (new RedisCommand<Boolean>(metadataRedis.getShardedJedisPool()) {
             @Override
@@ -55,6 +66,11 @@ public class MetadataRedisDao {
         }).execute();
     }
 
+    /**
+     * Set last query token for #YoutubeDataRetriever
+     * @param regionCode
+     * @param token
+     */
     public void setPopularToken(final String regionCode, final String token) {
         (new RedisCommand<Integer>(metadataRedis.getShardedJedisPool()) {
             @Override
@@ -67,6 +83,11 @@ public class MetadataRedisDao {
         }).execute();
     }
 
+    /**
+     * Get last query token for #YoutubeDataRetriever
+     * @param regionCode
+     * @return
+     */
     public String getPopularToken(final String regionCode) {
         return (new RedisCommand<String>(metadataRedis.getShardedJedisPool()) {
             @Override
@@ -78,6 +99,11 @@ public class MetadataRedisDao {
         }).execute();
     }
 
+    /**
+     * Get last query id for #FacebookDataRetriever
+     * @param pageId
+     * @return
+     */
     public String getNextPageUrl(final String pageId) {
         return (new RedisCommand<String>(metadataRedis.getShardedJedisPool()) {
             @Override
@@ -89,7 +115,11 @@ public class MetadataRedisDao {
         }).execute();
     }
 
-
+    /**
+     *  Set last query id for #FacebookDataRetriever
+     * @param pageId
+     * @param nextPageUrl
+     */
     public void setNextPageUrl(final String pageId, final String nextPageUrl) {
         (new RedisCommand<Integer>(metadataRedis.getShardedJedisPool()) {
             @Override
@@ -102,6 +132,11 @@ public class MetadataRedisDao {
         }).execute();
     }
 
+    /**
+     * Get last query id for #TwitterDataRetriever
+     * @param pageId
+     * @return
+     */
     public String getMaxId(final long pageId) {
         return (new RedisCommand<String>(metadataRedis.getShardedJedisPool()) {
             @Override
@@ -112,7 +147,11 @@ public class MetadataRedisDao {
         }).execute();
     }
 
-
+    /**
+     * Set last query id for #TwitterDataRetriever
+     * @param pageId
+     * @param maxId
+     */
     public void setMaxId(final String pageId, final String maxId) {
         (new RedisCommand<Integer>(metadataRedis.getShardedJedisPool()) {
             @Override

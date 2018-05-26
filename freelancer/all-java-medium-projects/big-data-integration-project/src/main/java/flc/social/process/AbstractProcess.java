@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * Created by thangpham on 12/09/2017.
+ * This abstract is base class for #ApplicationStarter to call by period or one time
+ * Created by Segnal on 12/09/2017.
  */
 public abstract class AbstractProcess implements Runnable {
 
@@ -34,6 +35,10 @@ public abstract class AbstractProcess implements Runnable {
         commentDataList = new ArrayList<CommentData>();
     }
 
+    /**
+     * This abstract function must be extended by all class to run their logic process
+     * @throws Exception
+     */
     public abstract void readAndCleanDataSource() throws Exception;
 
     public void run() {
@@ -44,7 +49,11 @@ public abstract class AbstractProcess implements Runnable {
         }
     }
 
-    // producer to kafka
+    /**
+     * This function is for DataRetriever classes to put comment data to Kafka
+     * @param commentData
+     * @throws Exception
+     */
     public void addComment(CommentData commentData) throws Exception {
         commentDataList.add(commentData);
         if(commentDataList.size() >= 50) {
@@ -54,7 +63,12 @@ public abstract class AbstractProcess implements Runnable {
         }
     }
 
-    public void sendKafka(List<CommentData> dataList) throws Exception {
+    /**
+     * An auxiliary method to put data to Kafka for addComment method
+     * @param dataList
+     * @throws Exception
+     */
+    private void sendKafka(List<CommentData> dataList) throws Exception {
         int partition = kafkaProducerLoader.getPartition(kafkaTopic);
         KafkaLogHandler handler = kafkaProducerLoader.getKafkaHandler(kafkaTopic);
         for (CommentData data : dataList) {
@@ -63,7 +77,11 @@ public abstract class AbstractProcess implements Runnable {
         }
     }
 
-    // consumer from kafka
+    /**
+     * This method is for Kafka Retriever classes to retrieve data from Kafka
+     * @return
+     * @throws Exception
+     */
     public List<KafkaRecord> getDataFromKafka() throws Exception {
         List<KafkaRecord> kafkaRecordList = new ArrayList<>();
         LOGGER.info("Access to Kafka with topic: "+kafkaTopic);

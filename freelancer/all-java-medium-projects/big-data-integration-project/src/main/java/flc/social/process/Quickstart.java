@@ -1,7 +1,7 @@
 package flc.social.process;
 
 /**
- * Created by thangpham on 13/09/2017.
+ * Created by Segnal on 13/09/2017.
  */
 
 import com.google.api.client.auth.oauth2.Credential;

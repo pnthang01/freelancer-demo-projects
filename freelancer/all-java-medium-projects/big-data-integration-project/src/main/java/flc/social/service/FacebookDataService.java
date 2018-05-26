@@ -4,12 +4,11 @@ import com.restfb.*;
 import com.restfb.types.Post;
 
 /**
- * Created by thangpham on 14/09/2017.
+ * Created by Segnal on 14/09/2017.
  */
 public class FacebookDataService {
 
-//    private static final String MY_ACCESS_TOKEN = "EAACEdEose0cBAJktliBNB2GJhlawZAcHPcyMuO2ILGFBLuMcpw5ZCMISrqaMsLT0jAmJq15QJZA7F8lZCVrZAJU0iemRmTBxizmsNxyhdgWi2KFwk1e2ZCbh00U7HvZBrY05vMlGssXSgjXYcc4MTROVARxn9LL33ZApCPrIjiJ67YVPIQ8IliApcFtpL2MonW02SwveZCMjAawZDZDEAACEdEose0cBAJktliBNB2GJhlawZAcHPcyMuO2ILGFBLuMcpw5ZCMISrqaMsLT0jAmJq15QJZA7F8lZCVrZAJU0iemRmTBxizmsNxyhdgWi2KFwk1e2ZCbh00U7HvZBrY05vMlGssXSgjXYcc4MTROVARxn9LL33ZApCPrIjiJ67YVPIQ8IliApcFtpL2MonW02SwveZCMjAawZDZD";
-    private static final String MY_ACCESS_TOKEN = "EAACEdEose0cBAAmSPXSld3AWTXIOhwSuePyWFmEJ4n5hiisHqatUFdE9kjPQW41VOzeW386GZCJcdRitKxZBEZAsSX28qsrOSN46JvK1ZAnjpJD6IZBcZAsWdwS3MHxXCwqNkTbpi7rQ8C5MuB7Cpg0HcenMxgF2Xd8rplZA7czUZCU0grroK3RcUZCKQ0JNZAX2D2xOzEkQ2IPwZDZD";
+    private static final String MY_ACCESS_TOKEN = "EAAYfHVmU3tgBAEsLHFDDKW4zHOuBeOXl8owFqqMFOgU3X4ex4liUWFnUWsu3PR3FxSFTZAWlUMYDViGZA9OAHW2qDqshxMR9uLwLq39n29ZCvKEwMyICWnRxqyScZBBrEdpip55oOouy81Td0IZBghEubHLHcO3n42vDYm9aryAZDZD";
 
     public static FacebookClient getFacebookClient() {
         return new DefaultFacebookClient(MY_ACCESS_TOKEN, Version.LATEST);

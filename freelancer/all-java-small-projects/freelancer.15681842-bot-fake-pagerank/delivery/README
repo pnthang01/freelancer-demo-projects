@@ -1,0 +1,37 @@
+1) Unzip src.zip
+2) Create new Java project by NetBeans/Eclipse/IntelliJ
+3) Replace new Java project's src folder by unzipped src folder
+4) Run MasterBot class, this master run default on 127.0.0.1:8777
+   Run: java -cp bot-fake-pagerank-1.0.jar prbot.MasterBot - this command will run MasterBot which binds at 127.0.0.1:8777 at default
+        java -cp bot-fake-pagerank-1.0.jar prbot.MasterBot -h 127.0.0.1 -p 8999 - this command will run MasterBot which binds at 127.0.0.1:8999
+
+5) Run SlaveBot class, this slave will connect to master as above default address, and run on random port, you can specify yourself when running
+   Run  java -cp bot-fake-pagerank-1.0.jar prbot.SlaveBot - this comand will run SlaveBot which binds at 127.0.0.1 with random port and connect to default 
+		MasterBot at 127.0.0.1:8777
+        java -cp bot-fake-pagerank-1.0.jar prbot.SlaveBot -mh 127.0.0.1 -mp 8999 - this comand will run SlaveBot which binds at 127.0.0.1 with random port and 			connect to MasterBot at 127.0.0.1:8999
+        java -cp bot-fake-pagerank-1.0.jar prbot.SlaveBot -h 127.0.0.1 -p 15000 - this command will run SlaveBot which binds at 127.0.0.1:15000 and connect to
+		default MasterBot at 127.0.0.1:8777
+        java -cp bot-fake-pagerank-1.0.jar prbot.SlaveBot -mh 127.0.0.1 -mp 8999 -h 127.0.0.1 -p 15000 - this comand will run SlaveBot which binds at 127.0.0.1:15000 
+		with random port and connect to MasterBot at 127.0.0.1:8999
+
+6) MasterBot will support following commands:
+ - list -> list all connect slaves 
+  Example: list
+	This clientId = [127.0.0.1:49982] started on Nov 27, 2017 10:26-42
+	This clientId = [127.0.0.1:49970] started on Nov 27, 2017 10:26-39
+
+ - connect -> connect slaveHostAddress/all hostName/hostAddress port [num-connection-default=1] [keepalive]
+  Example: connect 127.0.0.1:49982 google.com 80 5 (make 5 connections to google.com at port 80)
+           connect all google.com 80 keepalive (make 1 (default) connection to google.com at port 80 and keep the connection alive)
+
+ - connect with query -> connect slaveHostAddress/all hostName/hostAddress port [num-connection-default=1] [url=text(random_string)]
+  Example: connect all google.com 80 5 url=/q= (this will make all slave bots make 5 connections to google.com at port 80 and perform a random query)
+
+ - disconnect -> disconnect slaveHostAddress/all hostName/hostAddress port
+  Example: disconnect all google.com:80 (this will make all slave bots terminate connection to google.com at port 80)
+
+ - rise-fake-url -> rise-fake-url slaveHostAddress/all webServerPort fakeUrl
+  Example: rise-fake-url 40000 http://everythingfromhere.isfake/this-is-an-assigment-960ed2db5f3c22aa843dacf664c2c58c.html (This command will tell all slave bots to 	behave as webservers to serve, you can access to 127.0.0.1:40000 to acess web pages. Please use this fake-url. I'm trying to make this fake-url appears on google 
+	search)
+ - down-fake-url -> down-fake-url slaveHostAddress/all webServerPort
+  Example: rise-fake-url 40000 (This command will tell all slave bots to bring down their webservers)

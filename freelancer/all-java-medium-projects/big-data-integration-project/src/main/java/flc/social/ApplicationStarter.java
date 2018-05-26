@@ -8,8 +8,6 @@ import flc.social.process.AbstractProcess;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import scala.util.regexp.Base;
-import scala.xml.MetaData;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +16,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by thangpham on 11/09/2017.
+ * Created by Segnal on 11/09/2017.
  */
 public class ApplicationStarter {
 
@@ -27,6 +25,11 @@ public class ApplicationStarter {
     private ProcessConfigs processConfigs = new ProcessConfigs();
 
     public static void main(String[] args) {
+        args = new String[]{"Class",
+                "flc.social.process.FacebookDataRetriever",
+//                        "flc.social.process.YoutubeDataRetriever" ,
+//                        "flc.social.process.TwitterDataRetriever",
+                "Name", "job-processing-cleaning-data", "Param", "{}"};
         try {
             new ApplicationStarter().startToRun(args);
         } catch (Exception ex) {
@@ -38,6 +41,7 @@ public class ApplicationStarter {
     public void startToRun(String[] args) throws ConfigurationException, InterruptedException {
         if (args.length < 1) {
             LOGGER.error("Parameters are missing, please check again.");
+            return;
         }
         String clusterConfig = null;
         for (int i = 0; i < args.length; i += 2) {

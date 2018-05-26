@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by thangpham on 13/09/2017.
+ * Created by Segnal on 13/09/2017.
  */
 public class YoutubeDataService {
 

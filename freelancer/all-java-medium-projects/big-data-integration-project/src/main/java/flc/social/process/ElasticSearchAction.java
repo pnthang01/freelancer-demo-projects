@@ -15,30 +15,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by dientt on 9/16/17.
+ * Created by Segnal on 9/16/17.
  */
 public class ElasticSearchAction extends AbstractProcess {
 
-    // input: cluster_name
-    // result: insert data to elasticsearch
+    //Logger to log working step
+    static final Logger LOGGER = LogManager.getLogger(ElasticSearchAction.class);
 
+    //Load default Elasticsearch cluster
     private static final String CLUSTER_NAME = "social-app";
 
     private String index;
-
     private String type;
 
-    static final Logger LOGGER = LogManager.getLogger(ElasticSearchAction.class);
-
+    /**
+     * Initialize index and index's type to index comment data to
+     * @throws ConfigurationException
+     */
     public ElasticSearchAction() throws ConfigurationException {
         index = ElasticSearchConfiguration.load().getIndex(CLUSTER_NAME);
         type = ElasticSearchConfiguration.load().getType(CLUSTER_NAME);
     }
 
-    public static void main(String[] args) throws Exception {
-        new ElasticSearchAction().readAndCleanDataSource();
-    }
+//    public static void main(String[] args) throws Exception {
+//        new ElasticSearchAction().readAndCleanDataSource();
+//    }
 
+    /**
+     * Retrieve all data from Kafka and index it to Elasticsearch
+     * Method to be called by Application Starter.
+     * @throws Exception
+     */
     @Override
     public void readAndCleanDataSource() throws Exception {
         List<KafkaRecord> kafkaRecordList = getDataFromKafka(); // consumer data from kafka
@@ -53,6 +60,14 @@ public class ElasticSearchAction extends AbstractProcess {
         }
     }
 
+    /**
+     * Index list of #CommentData to #index and index #type with specified Elasticsearch client
+     * @param models
+     * @param client
+     * @param index
+     * @param type
+     * @throws UnknownHostException
+     */
     public void putData(List<CommentData> models, TransportClient client, String index, String type) throws UnknownHostException {
         try {
             LOGGER.info("Insert data to elasticsearch ...");
